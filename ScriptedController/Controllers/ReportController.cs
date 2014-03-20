@@ -9,9 +9,11 @@ namespace ScriptedController.Controllers {
     using CSScriptLibrary;
 
     public class ReportController : Controller {
+        private const string ScriptsDirectory = "~/Scripts/Reports";
+
         private static readonly object SyncRoot = new object();
         private volatile static Dictionary<string, MvcAction> _actions;
-        internal delegate ActionResult MvcAction();
+        private delegate ActionResult MvcAction(string i);
 
         protected override void Initialize(RequestContext requestContext) {
             base.Initialize(requestContext);
@@ -25,7 +27,7 @@ namespace ScriptedController.Controllers {
             lock (SyncRoot) {
                 if (_actions == null) {
                     _actions = new Dictionary<string, MvcAction>();
-                    var path = Server.MapPath("~/Scripts/Reports");
+                    var path = Server.MapPath(ScriptsDirectory);
 
                     foreach (var file in Directory.GetFiles(path)) {
                         try {
@@ -35,7 +37,7 @@ namespace ScriptedController.Controllers {
                                 _actions[actionName] = action;
                             }
                         } catch (Exception ex) {
-                            // log something out or do something clever
+                            Console.WriteLine(ex.Message);
                         }
                     }
                 }
@@ -43,7 +45,7 @@ namespace ScriptedController.Controllers {
         }
 
         public ActionResult Foo1() {
-            return new JsonResult() {
+            return new JsonResult {
                 Data = "Foo1",
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
@@ -51,7 +53,7 @@ namespace ScriptedController.Controllers {
         
         protected override void HandleUnknownAction(string actionName) {
             if (_actions.ContainsKey(actionName)) {
-                _actions[actionName]().ExecuteResult(ControllerContext);
+                _actions[actionName](HttpContext.Request.Params["i"]).ExecuteResult(ControllerContext);
             } else {
                 try {
                     base.HandleUnknownAction(actionName);

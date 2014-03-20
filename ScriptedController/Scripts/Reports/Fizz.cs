@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
-public ActionResult Fizz() {
+public ActionResult Fizz(string i) {
     return new JsonResult() {
-        Data = "Fizz",
+        Data = "Fizz - " + i,
         JsonRequestBehavior = JsonRequestBehavior.AllowGet
     };
 }

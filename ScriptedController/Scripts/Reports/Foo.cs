@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
-public ActionResult Foo() {
+public ActionResult Foo(string i) {
     return new JsonResult() {
-        Data = "Foo",
+        Data = "Foo - " + i,
         JsonRequestBehavior = JsonRequestBehavior.AllowGet
     };
 }
