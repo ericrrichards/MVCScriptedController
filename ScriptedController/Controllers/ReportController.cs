@@ -43,13 +43,6 @@ namespace ScriptedController.Controllers {
                 }
             }
         }
-
-        public ActionResult Foo1() {
-            return new JsonResult {
-                Data = "Foo1",
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet
-            };
-        }
         
         protected override void HandleUnknownAction(string actionName) {
             if (_actions.ContainsKey(actionName)) {
@@ -63,7 +56,4 @@ namespace ScriptedController.Controllers {
             }
         }
     }
-
-    
-
 }
